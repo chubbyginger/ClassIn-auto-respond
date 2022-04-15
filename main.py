@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 import pyautogui as autogui
-import pygame
-from pygame.locals import *
 import threading
 import sys
 import time
@@ -39,11 +37,6 @@ if sys.platform == "win32":
     gdi32 = ctypes.WinDLL('gdi32', use_last_error=True)
     gdi32.GetPixel.restype = wintypes.COLORREF
     gdi32.GetPixel.argtypes = (wintypes.HDC, ctypes.c_int, ctypes.c_int)
-
-# Init pygame
-pygame.init()
-# screen = pygame.display.set_mode((500, 400), 0, 32)
-# pygame.display.set_caption("这是个没卵用的窗口")
 
 # Print hello messages
 print("Classin Automove\n\
