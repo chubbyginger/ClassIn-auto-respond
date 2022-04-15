@@ -4,6 +4,7 @@ import pygame
 from pygame.locals import *
 import threading
 import sys
+import time
 if sys.platform == "win32":
     # For Windows, import the CTypes library.
     import ctypes
@@ -21,6 +22,13 @@ PixelR = 0
 PixelG = 0
 PixelB = 0
 stopThread = False
+
+timeDelay = 0.0001
+stepX = 100
+stepY = 100
+
+# WARNING! DON'T TURN OFF THE FAILSAFE!
+autogui.FAILSAFE = True
 
 # For Windows, Register USER32.DLL for getting RGB values of the screen.
 if sys.platform == "win32":
@@ -42,6 +50,7 @@ print("Classin Automove\n\
 ==============================\n\
 posLeftTop: 确定左上角位置    posRightBot: 确定右下角位置\n\
 getPixelData: 取色          start: 开始\n\
+exit: 退出\
 stop: 结束\n")
 
 # Get colour on Windows. See https://blog.51cto.com/u_15127566/4229590
@@ -61,7 +70,20 @@ def getPixelColour(x, y):
 
 def scanScreen():
     # TODO: scan function
-    pass
+    while True:
+        regWidth = rightBotX - leftTopX
+        regHeight = rightBotY - leftTopY
+        for offsetY in range(0, regHeight, stepX):
+            currY = leftTopY + offsetY
+            for offsetX in range(0, regWidth, stepY):
+                currX = leftTopX + offsetX
+                currR, currG, currB = getPixelColour(currX, currY)
+                if currR == PixelR & currG == PixelG & currB == PixelB:
+                    autogui.click(currX, currY)
+                time.sleep(timeDelay)
+                # Exit thread when signal is received.
+                if stopThread == True:
+                    return
 
 # Main loop
 while True:
@@ -89,3 +111,8 @@ while True:
     if inCommand == "stop":
         stopThread = True
         print("已停止扫描屏幕线程")
+
+    if inCommand == "exit":
+        stopThread = True
+        print("已停止扫描屏幕线程")
+        exit()
